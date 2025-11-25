@@ -37,11 +37,11 @@ const Navbar = () => {
             >
               <span className={`font-medium text-sm xl:text-base transition-colors ${location.pathname === link.path ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'}`}>
                 {link.name}
-                {link.isSpecial && (
+                {/* {link.isSpecial && (
                   <span className="absolute -top-3 -right-4 bg-orange-100 text-orange-600 text-[10px] font-bold px-1.5 rounded-md border border-orange-200">
                     NEW
                   </span>
-                )}
+                )} */}
               </span>
               
               {/* Animated Underline */}
