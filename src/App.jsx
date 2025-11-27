@@ -6,7 +6,7 @@ import Services from './pages/Services';
 import Portfolio from './pages/Portfolio';
 import TemplateStore from './pages/TemplateStore'; // FIXED: Renamed from Portfolio to prevent duplicate
 import ScrollToTop from './components/Scrolltotop';
-import Contact from './pages/contact';
+import Contact from './pages/Contact';
 
 function App() {
   return (
