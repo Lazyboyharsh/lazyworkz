@@ -130,7 +130,7 @@ const Home = () => {
     {
       title: "Modern Websites",
       description: "Fast, responsive websites built with React and optimized frameworks. We ensure your site loads instantly and looks great on all devices.",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=70",
+      image: "images/website-design.jpg",
       alt: "Man coding on a laptop",
       type: "websites",
       delay: "delay-0",
@@ -138,7 +138,7 @@ const Home = () => {
     {
       title: "Logo & Branding",
       description: "Your logo is your face. We design memorable visual identities that stick in your customer's mind and define your market presence.",
-      image: "https://images.unsplash.com/photo-1579783900882-c0d3ce7bcfa4?auto=format&fit=crop&w=600&q=70",
+      image: "images/logo-design.jpg",
       alt: "Graphic design tools on a desk",
       type: "branding",
       delay: "delay-150",
@@ -146,7 +146,7 @@ const Home = () => {
     {
       title: "SEO & Data Analysis",
       description: "We analyze your traffic and optimize your content to help you rank higher on search engines. Our strategies deliver data-driven growth.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=70",
+      image: "images/analysis-design.jpg",
       alt: "Data dashboards and charts",
       type: "data",
       delay: "delay-300",
