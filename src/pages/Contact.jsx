@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, MapPin, Phone, Send, CheckCircle, Plus, Minus, Twitter, Linkedin, Instagram, Sparkles, MessageCircle, AlertCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, CheckCircle, Plus, Minus, Twitter, Linkedin, Instagram, Sparkles, MessageCircle, AlertCircle } from 'lucide-react';
 
 // --- DATA CONFIGURATION ---
 const contactDetails = [
@@ -39,7 +39,7 @@ const faqs = [
   },
 ];
 
-// --- SUB-COMPONENT: FAQ ITEM (Matches Services Page Style) ---
+// --- SUB-COMPONENT: FAQ ITEM ---
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -68,18 +68,25 @@ const FAQItem = ({ question, answer }) => {
 
 // --- MAIN COMPONENT ---
 const Contact = () => {
-  const [status, setStatus] = useState('idle'); // idle, submitting, success
+  const [status, setStatus] = useState('idle'); 
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  // Email validation logic
+  // Form State for controlled inputs
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+
   const validateEmail = (value) => {
     const emailRegex = /[^@\s]+@[^@\s]+\.[^@\s]+/;
     if (!value) {
       setEmailError('Email is required');
       return false;
     } else if (!emailRegex.test(value)) {
-      setEmailError('Please enter a valid email address (e.g. name@domain.com)');
+      setEmailError('Please enter a valid email address');
       return false;
     }
     setEmailError('');
@@ -89,39 +96,68 @@ const Contact = () => {
   const handleEmailChange = (e) => {
     const val = e.target.value;
     setEmail(val);
-    // Real-time validation if error already exists
-    if (emailError) {
-      validateEmail(val);
-    }
+    if (emailError) validateEmail(val);
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate before submitting
-    if (!validateEmail(email)) {
-      return;
-    }
+    if (!validateEmail(email)) return;
 
     setStatus('submitting');
-    // Simulate network request
-    setTimeout(() => {
-      setStatus('success');
-      setEmail(''); // Reset form
-    }, 2000);
+
+    // --- WEB3FORMS CONFIGURATION ---
+    // 1. Go to web3forms.com and get your Access Key (it's free)
+    // 2. Paste it inside the quotes below:
+    const ACCESS_KEY = "3ba0f05a-b567-4edd-8985-ffdabe341542"; 
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            access_key: ACCESS_KEY,
+            name: formData.name,
+            email: email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus('success');
+        // Reset form
+        setEmail('');
+        setFormData({ name: '', phone: '', subject: 'General Inquiry', message: '' });
+      } else {
+        console.error("Form error:", data);
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
   };
 
   return (
     <div className="pt-16 w-full overflow-x-hidden font-sans bg-white selection:bg-orange-100 selection:text-orange-700">
       
-      {/* 1. HERO HEADER (Matches Services Page) */}
+      {/* 1. HERO HEADER */}
       <header className="relative py-20 lg:py-28 overflow-hidden">
-        {/* CSS Grid Background Pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" 
              style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
         </div>
-        
-        {/* Soft Gradients */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
         
@@ -183,16 +219,12 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Social Proof */}
             <div className="p-8 bg-gray-900 rounded-3xl text-white relative overflow-hidden">
-               {/* Background effect */}
                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-
               <h4 className="font-bold text-xl mb-2 relative z-10">Join our community</h4>
               <p className="text-gray-400 text-sm mb-6 relative z-10">Follow us for updates and tech tips.</p>
-              
               <div className="flex gap-4 relative z-10">
-                {[<Twitter size={20} />, <Linkedin size={20} />, <Instagram size={20} />].map((icon, i) => (
+                {[<Twitter key="t" size={20} />, <Linkedin key="l" size={20} />, <Instagram key="i" size={20} />].map((icon, i) => (
                   <a key={i} href="#" className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-all">
                     {icon}
                   </a>
@@ -240,7 +272,7 @@ const Contact = () => {
                   exit={{ opacity: 0 }}
                   className="space-y-6" 
                   onSubmit={handleSubmit}
-                  noValidate // Disable browser default validation to use our custom one
+                  noValidate
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="text-orange-500" size={20} />
@@ -251,7 +283,15 @@ const Contact = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Name</label>
-                      <input required type="text" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900" placeholder="John Doe" />
+                      <input 
+                        required 
+                        type="text" 
+                        name="name" 
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900" 
+                        placeholder="John Doe" 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email</label>
@@ -268,7 +308,6 @@ const Contact = () => {
                           }`}
                         placeholder="john@example.com" 
                       />
-                      {/* Error Message */}
                       <AnimatePresence>
                         {emailError && (
                           <motion.div 
@@ -293,9 +332,11 @@ const Contact = () => {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium z-10">+91</span>
                         <input 
                           type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
                           pattern="[6-9][0-9]{9}"
                           maxLength="10"
-                          title="Please enter a valid 10-digit Indian mobile number"
                           className="w-full p-3 pl-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900" 
                           placeholder="98765 43210" 
                         />
@@ -303,24 +344,42 @@ const Contact = () => {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Subject</label>
-                      <select className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900">
-                        <option>General Inquiry</option>
-                        <option>Portfolio Website</option>
-                        <option>Company Profile</option>
-                        <option>E-commerce Store</option>
-                        <option>Logo & Branding</option>
-                        <option>Data Analytics</option>
-                        <option>Custom Build</option>
-                        <option>Job Application</option>
-                        <option>Just saying hi</option>
+                      <select 
+                        name="subject" 
+                        value={formData.subject}
+                        onChange={handleChange}
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900"
+                      >
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Portfolio Website">Portfolio Website</option>
+                        <option value="Company Profile">Company Profile</option>
+                        <option value="E-commerce Store">E-commerce Store</option>
+                        <option value="Logo & Branding">Logo & Branding</option>
+                        <option value="Custom Build">Custom Build</option>
+                        <option value="Just saying hi">Just saying hi</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Message</label>
-                    <textarea required rows="4" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900" placeholder="Tell us about your project..."></textarea>
+                    <textarea 
+                        required 
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        rows="4" 
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-gray-900" 
+                        placeholder="Tell us about your project..."
+                    ></textarea>
                   </div>
+
+                  {status === 'error' && (
+                    <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
+                        <AlertCircle size={16} />
+                        Failed to send message. Please try again.
+                    </div>
+                  )}
 
                   <button 
                     disabled={status === 'submitting'}
@@ -361,7 +420,6 @@ const Contact = () => {
               Everything you need to know about working with LazyWorkz.
             </p>
           </motion.div>
-         
           
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 md:p-6">
             {faqs.map((faq, i) => (
