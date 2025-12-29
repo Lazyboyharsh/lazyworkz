@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 // Define a consistent theme primary color for Tailwind utility classes
 const PRIMARY_COLOR_CLASSES = "from-orange-500 to-orange-600";
-const HOVER_PRIMARY_COLOR_CLASSES = "hover:bg-orange-700";
 
 /* --- 🌟 HELPER: ANIMATED NUMBER COUNTER (Enhanced) 🌟 --- */
 const Counter = ({ target, label, suffix = "" }) => {
@@ -91,15 +90,55 @@ const getIconClass = (type) => {
 /* --- MAIN HOME PAGE (Enhanced) --- */
 const Home = () => {
   // Form State
-  const [formStatus, setFormStatus] = useState('idle'); // idle, submitting, success
+  const [formStatus, setFormStatus] = useState('idle'); // idle, submitting, success, error
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    website: ''
+  });
 
-  const handleFormSubmit = (e) => {
+  // Handle Input Changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // Handle Web3Forms Submission
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('submitting');
-    // Simulate API call
-    setTimeout(() => {
-      setFormStatus('success');
-    }, 2000);
+
+    const ACCESS_KEY = "3ba0f05a-b567-4edd-8985-ffdabe341542"; // Your Web3Forms Key
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key:"3ba0f05a-b567-4edd-8985-ffdabe341542",
+          subject: "New Free Audit Request",
+          from_name: "LazyWorkz Audit Form",
+          ...formData
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFormStatus('success');
+        setFormData({ name: '', email: '', website: '' }); // Clear form
+      } else {
+        console.error("Form submission error:", result);
+        setFormStatus('error');
+        setTimeout(() => setFormStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 3000);
+    }
   };
 
   // Centralized Scroll Animation Logic
@@ -224,6 +263,8 @@ const Home = () => {
                           <input
                             type="text"
                             id="name"
+                            value={formData.name}
+                            onChange={handleChange}
                             placeholder="Full Name"
                             required
                             className="w-full bg-gray-50 border border-gray-200 text-gray-900 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all placeholder-gray-400"
@@ -234,6 +275,8 @@ const Home = () => {
                           <input
                             type="email"
                             id="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             placeholder="Email Address"
                             required
                             className="w-full bg-gray-50 border border-gray-200 text-gray-900 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all placeholder-gray-400"
@@ -244,15 +287,24 @@ const Home = () => {
                           <input
                             type="url"
                             id="website"
+                            value={formData.website}
+                            onChange={handleChange}
                             placeholder="Website URL (if you have one)"
                             className="w-full bg-gray-50 border border-gray-200 text-gray-900 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all placeholder-gray-400"
                           />
                         </div>
+                        
+                        {/* Error Message Display */}
+                        {formStatus === 'error' && (
+                          <div className="text-red-500 text-sm text-center">
+                            Something went wrong. Please try again later.
+                          </div>
+                        )}
 
                         <button
                           type="submit"
                           disabled={formStatus === 'submitting'}
-                          className={`w-full bg-gradient-to-r ${PRIMARY_COLOR_CLASSES} text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-orange-500/25 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2`}
+                          className={`w-full bg-gradient-to-r ${PRIMARY_COLOR_CLASSES} text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-orange-500/25 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed`}
                         >
                           {formStatus === 'submitting' ? (
                             <>
@@ -294,7 +346,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 3. SERVICES */}
+      {/* 3. SERVICES (Fixed Image Fit) */}
       <section className="py-24 bg-white" aria-labelledby="services-heading">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 reveal animate-fade-in-up">
@@ -303,7 +355,7 @@ const Home = () => {
             <p className="text-lg text-gray-500 max-w-xl mx-auto">We focus on these three pillars to drive measurable, long-term growth for your business.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-10 items-start">
             {services.map((service, index) => {
               const { icon, bg, text } = getIconClass(service.type);
               return (
@@ -311,11 +363,11 @@ const Home = () => {
                   key={index}
                   className={`reveal group bg-white rounded-xl shadow-lg border-t-4 border-orange-500 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] animate-fade-in-up ${service.delay}`}
                 >
-                  <div className="h-52 overflow-hidden">
+                  <div className="w-full overflow-hidden bg-gray-50">
                     <img
                       src={service.image}
                       alt={service.alt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-110"
                       loading="lazy"
                     />
                   </div>

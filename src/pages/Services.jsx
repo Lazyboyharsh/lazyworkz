@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Plus, Minus, ArrowRight, Sparkles, AlertCircle, Palette, BarChart3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, Plus, Minus, ArrowRight, Sparkles, AlertCircle, X, Loader2 } from 'lucide-react';
 
 // --- DATA CONFIGURATION ---
 const plans = [
@@ -34,7 +34,7 @@ const plans = [
       'Gallery & Testimonials'
     ],
     cta: 'Choose Business',
-    isPopular: true, // Triggers the Dark Card design
+    isPopular: true,
     delay: 0.2,
   },
   {
@@ -151,13 +151,154 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => {
   );
 };
 
+// --- SUB-COMPONENT: CONTACT MODAL ---
+const ContactModal = ({ plan, onClose }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState(null); // null | 'success' | 'error'
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setResult(null);
+
+    const formData = new FormData(e.target);
+    
+    // Add Web3Forms Access Key
+    formData.append("access_key", "3ba0f05a-b567-4edd-8985-ffdabe341542");
+    
+    // Custom Subject
+    formData.append("subject", `New Inquiry: ${plan?.name || 'General Inquiry'}`);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setResult('success');
+        e.target.reset();
+        // Optional: Close modal after delay
+        // setTimeout(onClose, 3000);
+      } else {
+        setResult('error');
+      }
+    } catch (error) {
+      setResult('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      onClick={onClose}
+    >
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="bg-gradient-to-r from-orange-50 to-white px-8 py-6 border-b border-orange-100 flex justify-between items-center">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Get Started</h3>
+            <p className="text-sm text-gray-500 mt-1">Inquiry for <span className="text-orange-600 font-semibold">{plan?.name}</span></p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="p-8">
+          {result === 'success' ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check size={32} />
+              </div>
+              <h4 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h4>
+              <p className="text-gray-500 mb-6">Thank you for your interest. Our team will contact you shortly regarding the {plan?.name}.</p>
+              <button onClick={onClose} className="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                Close Window
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Name</label>
+                  <input required type="text" name="name" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all" placeholder="John Doe" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Phone</label>
+                  <input required type="tel" name="phone" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all" placeholder="+91 98765..." />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Email Address</label>
+                <input required type="email" name="email" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all" placeholder="john@example.com" />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Message (Optional)</label>
+                <textarea name="message" rows="3" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all" placeholder="Tell us about your project requirements..."></textarea>
+              </div>
+
+              {result === 'error' && (
+                <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg flex items-center gap-2">
+                  <AlertCircle size={16} /> Something went wrong. Please try again.
+                </div>
+              )}
+
+              <button 
+                disabled={isSubmitting}
+                className="w-full bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-orange-700 hover:shadow-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              >
+                {isSubmitting ? <Loader2 className="animate-spin" /> : 'Send Inquiry'}
+              </button>
+            </form>
+          )}
+        </div>
+        
+        {/* Footer info */}
+        {result !== 'success' && (
+          <div className="bg-gray-50 px-8 py-4 text-center">
+            <p className="text-xs text-gray-400">We respect your privacy. No spam.</p>
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+};
+
 // --- MAIN COMPONENT ---
 const Services = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState(null); // Controls Modal Visibility
 
   return (
     <div className="pt-16 w-full overflow-x-hidden font-sans bg-white selection:bg-orange-100 selection:text-orange-700">
       
+      {/* MODAL OVERLAY */}
+      <AnimatePresence>
+        {selectedPlan && (
+          <ContactModal 
+            plan={selectedPlan} 
+            onClose={() => setSelectedPlan(null)} 
+          />
+        )}
+      </AnimatePresence>
+
       {/* 1. HERO SECTION WITH GRID PATTERN */}
       <header className="relative py-20 lg:py-28 overflow-hidden">
         {/* CSS Grid Background Pattern */}
@@ -255,10 +396,10 @@ const Services = () => {
                 ))}
               </ul>
 
-              <a 
-                href="/contact" 
+              <button 
+                onClick={() => setSelectedPlan(plan)}
                 className={`
-                  group w-full font-bold py-3 rounded-lg text-sm text-center transition-all flex items-center justify-center gap-2
+                  group w-full font-bold py-3 rounded-lg text-sm text-center transition-all flex items-center justify-center gap-2 cursor-pointer
                   ${plan.isPopular 
                     ? 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/30' 
                     : 'bg-gray-50 text-gray-900 hover:bg-gray-100 border border-gray-200'}
@@ -266,7 +407,7 @@ const Services = () => {
               >
                 {plan.cta}
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-              </a>
+              </button>
             </motion.div>
           ))}
 
@@ -295,9 +436,12 @@ const Services = () => {
               <div className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                   <h4 className="font-bold text-gray-900 mb-2">Need a Custom Quote?</h4>
                   <p className="text-sm text-gray-500 mb-4">For large scale applications or unique ideas.</p>
-                  <a href="/contact" className="text-orange-600 font-bold hover:text-orange-700 inline-flex items-center group text-sm">
+                  <button 
+                    onClick={() => setSelectedPlan({ name: 'Custom Quote', price: 'TBD' })}
+                    className="text-orange-600 font-bold hover:text-orange-700 inline-flex items-center group text-sm"
+                  >
                     Contact Sales Team <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
-                  </a>
+                  </button>
               </div>
             </motion.div>
             

@@ -1,6 +1,20 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, MapPin, Phone, CheckCircle, Plus, Minus, Twitter, Linkedin, Instagram, Sparkles, MessageCircle, AlertCircle } from 'lucide-react';
+import { 
+  Mail, 
+  MapPin, 
+  Phone, 
+  CheckCircle, 
+  Plus, 
+  Minus, 
+  Twitter, 
+  Linkedin, 
+  Instagram, 
+  Sparkles, 
+  MessageCircle, 
+  AlertCircle,
+  ArrowRight // Imported directly from lucide-react
+} from 'lucide-react';
 
 // --- DATA CONFIGURATION ---
 const contactDetails = [
@@ -109,9 +123,6 @@ const Contact = () => {
 
     setStatus('submitting');
 
-    // --- WEB3FORMS CONFIGURATION ---
-    // 1. Go to web3forms.com and get your Access Key (it's free)
-    // 2. Paste it inside the quotes below:
     const ACCESS_KEY = "3ba0f05a-b567-4edd-8985-ffdabe341542"; 
 
     try {
@@ -123,11 +134,19 @@ const Contact = () => {
         },
         body: JSON.stringify({
             access_key: ACCESS_KEY,
-            name: formData.name,
-            email: email,
-            phone: formData.phone,
-            subject: formData.subject,
-            message: formData.message,
+            
+            // This sets the Email Title in your inbox
+            subject: `New Message: ${formData.subject}`, 
+            
+            // --- DATA FIELDS (These appear inside the email) ---
+            Name: formData.name,
+            Email: email,
+            Phone: formData.phone,
+            
+            // We rename this to "Inquiry_Type" so it definitely shows up in the body
+            Inquiry_Type: formData.subject, 
+            
+            Message: formData.message,
         })
       });
 
@@ -135,7 +154,6 @@ const Contact = () => {
 
       if (data.success) {
         setStatus('success');
-        // Reset form
         setEmail('');
         setFormData({ name: '', phone: '', subject: 'General Inquiry', message: '' });
       } else {
@@ -439,23 +457,5 @@ const Contact = () => {
     </div>
   );
 };
-
-// Quick helper for the button arrow
-const ArrowRight = ({ size }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M5 12h14" />
-    <path d="m12 5 7 7-7 7" />
-  </svg>
-);
 
 export default Contact;
