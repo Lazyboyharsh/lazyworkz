@@ -26,7 +26,7 @@ const contactDetails = [
   },
   {
     icon: <MapPin className="w-5 h-5" />,
-    title: "Visit Us",
+    title: "Location",
     info: "Nangli, Najafgarh",
     sub: "New Delhi - 110043",
   },
@@ -242,12 +242,27 @@ const Contact = () => {
               <h4 className="font-bold text-xl mb-2 relative z-10">Join our community</h4>
               <p className="text-gray-400 text-sm mb-6 relative z-10">Follow us for updates and tech tips.</p>
               <div className="flex gap-4 relative z-10">
-                {[<Twitter key="t" size={20} />, <Linkedin key="l" size={20} />, <Instagram key="i" size={20} />].map((icon, i) => (
-                  <a key={i} href="#" className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-all">
-                    {icon}
-                  </a>
-                ))}
-              </div>
+  {[
+    { 
+      icon: <Instagram size={20} />, 
+      link: "https://www.instagram.com/lazyworkz__" 
+    },
+    { 
+      icon: <MessageCircle size={20} />, 
+      link: "https://whatsapp.com/channel/0029Vb7H9DQFi8xj4l65K80W" // Replace with your country code + number
+    }
+  ].map((item, i) => (
+    <a 
+      key={i} 
+      href={item.link} // Link is applied here
+      target="_blank" // Opens in a new tab
+      rel="noopener noreferrer" // Security best practice
+      className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-all"
+    >
+      {item.icon}
+    </a>
+  ))}
+</div>
             </div>
           </motion.div>
 
