@@ -10,7 +10,7 @@ const Portfolio = () => {
       title: "AGJ DATA INFOTECH", 
       category: "Company Profile Website", 
       type: "Web", 
-      img: "/images/projects/agj.jpg", 
+      img: "/images/agj.jpg", 
       link: "https://agjdatainfotech.com",
       // BIG SQUARE (2x2) - The "Hero" project
       className: "md:col-span-2 md:row-span-2" 
@@ -20,7 +20,7 @@ const Portfolio = () => {
       title: "TechStart Logo", 
       category: "Brand Identity", 
       type: "Branding", 
-      img: "/images/projects/logo.png", 
+      img: "/images/logo.png", 
       link: "/projects/techstart",
       // WIDE RECTANGLE (2 columns wide)
       className: "md:col-span-2" 
@@ -30,7 +30,7 @@ const Portfolio = () => {
       title: "Dhanvi Trendx", 
       category: "Ecommerce", 
       type: "Web", 
-      img: "/images/projects/dhanvi.jpg", 
+      img: "/images/dhanvi.jpg", 
       link: "https://dhanvitrendz.in",
       // SMALL SQUARE (Standard)
       className: "md:col-span-1" 
@@ -40,7 +40,7 @@ const Portfolio = () => {
       title: "Portfolio", 
       category: "Portfolio website", 
       type: "Data", 
-      img: "/images/projects/harshportfolio.jpg", 
+      img: "/images/harshportfolio.jpg", 
       link: "https://harshjainportfolio.netlify.app/",
       // SMALL SQUARE (Standard)
       className: "md:col-span-1" 
@@ -50,7 +50,7 @@ const Portfolio = () => {
       title: "Mrs", 
       category: "Company Catalog", 
       type: "Data", 
-      img: "/images/projects/mrs.jpg", 
+      img: "/images/mrs.jpg", 
       link: "https://mrscutlery.vercel.app/",
       // WIDE RECTANGLE
       className: "md:col-span-2" 
@@ -60,7 +60,7 @@ const Portfolio = () => {
       title: "Namo", 
       category: "Company Profile website", 
       type: "Web", 
-      img: "/images/projects/namo.jpg", 
+      img: "/images/namo.jpg", 
       link: "https://lazyboyharsh.github.io/namo-production/index.html",
       // WIDE RECTANGLE
       className: "md:col-span-2" 
