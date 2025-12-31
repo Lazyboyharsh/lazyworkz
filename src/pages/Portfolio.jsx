@@ -31,7 +31,7 @@ const Portfolio = () => {
       category: "Ecommerce", 
       type: "Web", 
       img: "/images/projects/dhanvi.jpg", 
-      link: "https://dhanvitrendx.in",
+      link: "https://dhanvitrendz.in",
       // SMALL SQUARE (Standard)
       className: "md:col-span-1" 
     },
