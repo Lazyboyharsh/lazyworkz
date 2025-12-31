@@ -329,38 +329,73 @@ const Home = () => {
       </section>
 
       {/* 5. NEW: TESTIMONIALS */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-3xl font-extrabold text-center mb-16">
-            What People Say
-          </motion.h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-               <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 30 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                viewport={{ once: true }} 
-                transition={{ delay: i * 0.1 }}
-                className="bg-gray-50 p-8 rounded-2xl"
-               >
-                 <div className="flex gap-1 text-orange-400 mb-4"><Star fill="currentColor" size={16} /><Star fill="currentColor" size={16} /><Star fill="currentColor" size={16} /><Star fill="currentColor" size={16} /><Star fill="currentColor" size={16} /></div>
-                 <p className="text-gray-600 mb-6 italic">"LazyWorkz transformed our online presence. The website is fast, beautiful, and our sales have doubled since the launch."</p>
-                 <div className="flex items-center gap-3">
-                   <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                   <div>
-                     <div className="font-bold text-gray-900">Happy Client</div>
-                     <div className="text-xs text-gray-500">CEO, TechStartup</div>
-                   </div>
-                 </div>
-               </motion.div>
-            ))}
+<section className="py-24 bg-white">
+  <div className="container mx-auto px-6">
+    <motion.h2 
+      initial="hidden" 
+      whileInView="visible" 
+      viewport={{ once: true }} 
+      variants={fadeIn} 
+      className="text-3xl font-extrabold text-center mb-16"
+    >
+      What People Say
+    </motion.h2>
+
+    <div className="grid md:grid-cols-3 gap-8">
+      {[
+        {
+          name: "Vikram Mehta",
+          // role: "Founder, UrbanKicks",
+          review: "LazyWorkz ne game change kar diya! The website is butter smooth and the design is exactly what I wanted. Best part is their support team—hamesha available rehte hain."
+        },
+        {
+          name: "Anjali Gupta",
+          // role: "Marketing Head, TechFlow",
+          review: "Honestly, finding a reliable agency is hard, but these guys are genuine. Kaam time pe deliver kiya aur koi hidden charges nahi. Super satisfied with the new landing page!"
+        },
+        {
+          name: "Rohan Desai",
+          // role: "CEO, Desai Logistics",
+          review: "Professionalism at its peak. They understood our requirements perfectly. Website load speed ab kaafi fast hai. If you want quality work in a budget, go for them."
+        }
+      ].map((testimonial, i) => (
+        <motion.div 
+          key={i}
+          initial={{ opacity: 0, y: 30 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true }} 
+          transition={{ delay: i * 0.1 }}
+          className="bg-gray-50 p-8 rounded-2xl flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex gap-1 text-orange-400 mb-4">
+              {[...Array(5)].map((_, index) => (
+                <Star key={index} fill="currentColor" size={16} />
+              ))}
+            </div>
+            <p className="text-gray-600 mb-6 italic leading-relaxed">
+              "{testimonial.review}"
+            </p>
           </div>
-        </div>
-      </section>
+          
+          <div className="flex items-center gap-3 mt-auto">
+            {/* Using Initials for avatar since no images are available */}
+            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
+              {testimonial.name.split(' ').map(n => n[0]).join('')}
+            </div>
+            <div>
+              <div className="font-bold text-gray-900">{testimonial.name}</div>
+              <div className="text-xs text-gray-500">{testimonial.role}</div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* 6. STATS BAR */}
-      <motion.div 
+      {/* <motion.div 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         className="bg-gray-900 text-white py-16"
@@ -376,7 +411,7 @@ const Home = () => {
             <StatItem number="24/7" label="Support" />
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* 7. FINAL CTA */}
       <section className="py-24 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-center">

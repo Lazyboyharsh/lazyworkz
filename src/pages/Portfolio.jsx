@@ -1,25 +1,71 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ExternalLink, Filter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 
 const Portfolio = () => {
-  const [filter, setFilter] = useState('All');
 
-  // REALISTIC PROJECT DATA
   const projects = [
-    { id: 1, title: "AGJ DATA INFOTECH", category: "Company Profile Website", type: "Web", img: "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=800&q=80" },
-    { id: 2, title: "TechStart Logo", category: "Brand Identity", type: "Branding", img: "https://images.unsplash.com/photo-1626785774573-4b79931256aa?w=800&q=80" },
-    { id: 3, title: "Green Cafe", category: "Restaurant Website", type: "Web", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80" },
-    { id: 4, title: "Market Trends 2024", category: "Data Analysis Report", type: "Data", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" },
-    { id: 5, title: "Law Firm SEO", category: "SEO Optimization", type: "Data", img: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&q=80" },
-    { id: 6, title: "Urban Fashion", category: "E-Commerce Store", type: "Web", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80" },
+    { 
+      id: 1, 
+      title: "AGJ DATA INFOTECH", 
+      category: "Company Profile Website", 
+      type: "Web", 
+      img: "/images/projects/agj.jpg", 
+      link: "https://agjdatainfotech.com",
+      // BIG SQUARE (2x2) - The "Hero" project
+      className: "md:col-span-2 md:row-span-2" 
+    },
+    { 
+      id: 2, 
+      title: "TechStart Logo", 
+      category: "Brand Identity", 
+      type: "Branding", 
+      img: "/images/projects/logo.png", 
+      link: "/projects/techstart",
+      // WIDE RECTANGLE (2 columns wide)
+      className: "md:col-span-2" 
+    },
+    { 
+      id: 3, 
+      title: "Dhanvi Trendx", 
+      category: "Ecommerce", 
+      type: "Web", 
+      img: "/images/projects/dhanvi.jpg", 
+      link: "https://dhanvitrendx.in",
+      // SMALL SQUARE (Standard)
+      className: "md:col-span-1" 
+    },
+    { 
+      id: 4, 
+      title: "Portfolio", 
+      category: "Portfolio website", 
+      type: "Data", 
+      img: "/images/projects/harshportfolio.jpg", 
+      link: "https://harshjainportfolio.netlify.app/",
+      // SMALL SQUARE (Standard)
+      className: "md:col-span-1" 
+    },
+    { 
+      id: 5, 
+      title: "Mrs", 
+      category: "Company Catalog", 
+      type: "Data", 
+      img: "/images/projects/mrs.jpg", 
+      link: "https://mrscutlery.vercel.app/",
+      // WIDE RECTANGLE
+      className: "md:col-span-2" 
+    },
+    { 
+      id: 6, 
+      title: "Namo", 
+      category: "Company Profile website", 
+      type: "Web", 
+      img: "/images/projects/namo.jpg", 
+      link: "https://lazyboyharsh.github.io/namo-production/index.html",
+      // WIDE RECTANGLE
+      className: "md:col-span-2" 
+    },
   ];
-
-  // Filter Logic
-  const filteredProjects = filter === 'All' 
-    ? projects 
-    : projects.filter(project => project.type === filter);
 
   return (
     <div className="pt-16 w-full overflow-x-hidden font-sans bg-gray-50 min-h-screen">
@@ -42,53 +88,39 @@ const Portfolio = () => {
         </div>
       </header>
 
-      {/* 2. FILTER BUTTONS */}
+      {/* 2. PROJECT GRID */}
       <section className="container mx-auto px-4 py-12">
-        <div className="flex justify-center flex-wrap gap-4 mb-12">
-          {['All', 'Web', 'Branding', 'Data'].map((category) => (
-            <button 
-              key={category}
-              onClick={() => setFilter(category)}
-              className={`
-                px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 
-                ${filter === category 
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' 
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}
-              `}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* 3. PROJECT GRID */}
-        <motion.div 
-          layout 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          <AnimatePresence mode='popLayout'>
-            {filteredProjects.map((project) => (
-              <motion.div 
-                layout
+        {/* GRID CONFIGURATION:
+            1. grid-cols-1: Mobile (1 column stack)
+            2. md:grid-cols-4: Desktop (4 columns allow for 2x2, 2x1, 1x1 layouts)
+            3. auto-rows-[300px]: Sets a fixed height for every row, ensuring alignment.
+        */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[300px]">
+            {projects.map((project, index) => (
+              <motion.a 
                 key={project.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer h-80 bg-gray-900"
+                href={project.link}
+                target="_blank"             
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }} 
+                // We combine the project's specific sizing class with the base styles
+                className={`group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer bg-gray-200 ${project.className}`}
               >
-                {/* Image */}
+                {/* Image fills the container height/width exactly */}
                 <img 
                   src={project.img} 
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:opacity-40"
+                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110 group-hover:opacity-40"
                 />
                 
-                {/* Dark Overlay Gradient (Better readability) */}
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
 
-                {/* Hover Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 p-6">
+                {/* Content */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 p-6 z-10">
                   
                   <span className="text-orange-400 font-bold tracking-widest uppercase text-sm mb-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     {project.category}
@@ -105,15 +137,13 @@ const Portfolio = () => {
                   </div>
 
                 </div>
-              </motion.div>
+              </motion.a>
             ))}
-          </AnimatePresence>
-        </motion.div>
+        </div>
       </section>
 
-      {/* 4. CTA SECTION */}
+      {/* 3. CTA SECTION */}
       <section className="py-24 bg-gray-900 text-center mt-12 relative overflow-hidden">
-        {/* Decorative Background Blob */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full bg-orange-500/5 blur-3xl rounded-full pointer-events-none"></div>
 
         <div className="container mx-auto px-4 relative z-10">
