@@ -80,7 +80,7 @@ const TechMarquee = () => {
     <div className="w-full bg-white border-y border-gray-100 py-6 overflow-hidden relative z-20">
       <div className="flex gap-16 items-center animate-scroll whitespace-nowrap w-max">
         {[...techs, ...techs, ...techs, ...techs].map((tech, i) => (
-          <div key={i} className="flex items-center gap-3 text-gray-400 font-bold uppercase tracking-wider text-sm">
+          <div key={i} className="flex  items-center gap-3 text-gray-400 font-bold uppercase tracking-wider text-sm">
             {tech.icon}
             {tech.name}
           </div>
