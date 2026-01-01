@@ -258,7 +258,7 @@ const Home = () => {
                
                <div className="space-y-6">
                  {[
-                   { title: "Lightning Fast Delivery", desc: "Most projects delivered in under 2 weeks.", icon: <Rocket size={20} /> },
+                   { title: "Lightning Fast Delivery", desc: "Most projects delivered in under 1 weeks.", icon: <Rocket size={20} /> },
                    { title: "24/7 Dedicated Support", desc: "We are always here when you need us.", icon: <Clock size={20} /> },
                    { title: "Scalable Architecture", desc: "Built to handle millions of users.", icon: <Layers size={20} /> }
                  ].map((item, i) => (
@@ -281,10 +281,10 @@ const Home = () => {
             >
               <div className="absolute top-0 right-0 p-10 opacity-10"><Code2 size={100} /></div>
               <h3 className="text-3xl font-bold mb-6">Ready to Scale?</h3>
-              <p className="text-gray-400 mb-8 text-lg">Join the top 1% of businesses optimizing their digital presence today.</p>
+              <p className="text-gray-400 mb-8 text-lg">We Optimize. You Grow.</p>
               <div className="grid grid-cols-2 gap-8 border-t border-gray-700 pt-8">
-                 <div><div className="text-4xl font-bold text-orange-500 mb-1">98%</div><div className="text-sm text-gray-400">Client Retention</div></div>
-                 <div><div className="text-4xl font-bold text-orange-500 mb-1">100+</div><div className="text-sm text-gray-400">Projects Done</div></div>
+                 <div><div className="text-4xl font-bold text-orange-500 mb-1">90%</div><div className="text-sm text-gray-400">Client Retention</div></div>
+                 <div><div className="text-4xl font-bold text-orange-500 mb-1">50+</div><div className="text-sm text-gray-400">Projects Done</div></div>
               </div>
             </motion.div>
           </div>

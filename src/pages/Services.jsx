@@ -26,7 +26,7 @@ const plans = [
     price: '₹4,999',
     period: '/one-time',
     features: [
-      '5-10 Pages Website',
+      '4-6 Pages Website',
       'Mobile Responsive Layout',
       'Business Inquiry Form',
       'Google Maps Integration',
