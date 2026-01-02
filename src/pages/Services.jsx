@@ -57,7 +57,7 @@ const plans = [
   {
     name: 'Logo & Branding',
     desc: 'Stand out with a unique visual identity.',
-    price: '₹1,999',
+    price: '₹3,999',
     period: '/package',
     features: [
       '3 Unique Logo Concepts',
@@ -319,7 +319,7 @@ const Services = () => {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 text-orange-600 text-sm font-medium mb-6">
               <Sparkles size={14} className="text-orange-500" />
-              Transparent Indian Pricing
+              Transparent Pricing
             </div>
             
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
