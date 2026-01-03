@@ -9,23 +9,29 @@ const Navbar = () => {
   const [hoveredPath, setHoveredPath] = useState(null);
   const location = useLocation();
 
-  // --- NEW: Refs for Click Outside Logic ---
+  // Refs for Click Outside Logic
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // Scroll Detection
+  // --- OPTIMIZED SCROLL DETECTION ---
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const isScrolled = window.scrollY > 20;
+      // Only update state if the value changes (Prevents constant re-renders)
+      setScrolled(prev => {
+        if (prev !== isScrolled) return isScrolled;
+        return prev;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
+
+    // { passive: true } improves scroll performance significantly
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // --- NEW: Handle Click Outside ---
+  // --- HANDLE CLICK OUTSIDE ---
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // If menu is open, AND click is NOT in menu, AND click is NOT on the toggle button
       if (
         isOpen &&
         menuRef.current && 
@@ -37,7 +43,9 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -94,14 +102,14 @@ const Navbar = () => {
             `}
           >
             
-            {/* 1. LOGO (Text Only) */}
+            {/* 1. LOGO */}
             <Link to="/" className="flex items-center z-50 group" onClick={() => setIsOpen(false)}>
               <span className="font-extrabold text-2xl tracking-tighter text-gray-900 transition-all group-hover:opacity-80">
                 Lazy<span className="text-orange-600">Workz</span>
               </span>
             </Link>
 
-            {/* 2. DESKTOP LINKS (Sliding Background Animation) */}
+            {/* 2. DESKTOP LINKS */}
             <div className="hidden lg:flex items-center gap-2 bg-gray-100/50 p-1.5 rounded-full border border-gray-100">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
@@ -116,7 +124,6 @@ const Navbar = () => {
                       ${isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'}
                     `}
                   >
-                    {/* The Sliding Background Pill */}
                     {hoveredPath === link.path && (
                       <motion.div
                         layoutId="navbar-hover"
@@ -124,7 +131,6 @@ const Navbar = () => {
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       />
                     )}
-                    {/* Active State Dot */}
                     {isActive && (
                       <motion.span layoutId="active-dot" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full" />
                     )}
@@ -143,10 +149,11 @@ const Navbar = () => {
                 Hire Us <ArrowRight size={14} />
                </Link>
 
-               {/* Mobile Toggle - Attached buttonRef here */}
+               {/* Mobile Toggle */}
                <button 
                 ref={buttonRef}
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label="Toggle Menu"
                 className="lg:hidden p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors focus:outline-none"
                >
                  {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -157,7 +164,7 @@ const Navbar = () => {
         </div>
       </motion.header>
 
-      {/* --- MOBILE FULL SCREEN MENU OVERLAY --- */}
+      {/* --- MOBILE MENU OVERLAY --- */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -166,7 +173,6 @@ const Navbar = () => {
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             className="fixed inset-0 z-40 bg-white/60 pt-32 px-6 lg:hidden"
           >
-             {/* Attached menuRef here - Clicking outside this DIV closes the menu */}
              <motion.div 
                ref={menuRef}
                variants={menuVariants}
@@ -214,6 +220,6 @@ const Navbar = () => {
 // Helper icon component
 const RocketIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-)
+);
 
 export default Navbar;

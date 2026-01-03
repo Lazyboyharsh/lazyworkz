@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, 
@@ -7,13 +7,11 @@ import {
   CheckCircle, 
   Plus, 
   Minus, 
-  Twitter, 
-  Linkedin, 
   Instagram, 
   Sparkles, 
   MessageCircle, 
   AlertCircle,
-  ArrowRight // Imported directly from lucide-react
+  ArrowRight
 } from 'lucide-react';
 
 // --- DATA CONFIGURATION ---
@@ -94,6 +92,16 @@ const Contact = () => {
     message: ''
   });
 
+  // --- SEO OPTIMIZATION ---
+  useEffect(() => {
+    document.title = "Contact Us | LazyWorkz";
+    const metaDesc = document.createElement("meta");
+    metaDesc.name = "description";
+    metaDesc.content = "Get in touch with LazyWorkz. We reply fast to all inquiries regarding web development, SEO, and branding.";
+    document.head.appendChild(metaDesc);
+    return () => document.head.removeChild(metaDesc);
+  }, []);
+
   const validateEmail = (value) => {
     const emailRegex = /[^@\s]+@[^@\s]+\.[^@\s]+/;
     if (!value) {
@@ -134,18 +142,11 @@ const Contact = () => {
         },
         body: JSON.stringify({
             access_key: ACCESS_KEY,
-            
-            // This sets the Email Title in your inbox
             subject: `New Message: ${formData.subject}`, 
-            
-            // --- DATA FIELDS (These appear inside the email) ---
             Name: formData.name,
             Email: email,
             Phone: formData.phone,
-            
-            // We rename this to "Inquiry_Type" so it definitely shows up in the body
             Inquiry_Type: formData.subject, 
-            
             Message: formData.message,
         })
       });
@@ -173,11 +174,17 @@ const Contact = () => {
       
       {/* 1. HERO HEADER */}
       <header className="relative py-20 lg:py-28 overflow-hidden">
+        {/* Grid Pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" 
              style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
         </div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+
+        {/* LAG FIX: MOBILE (Static Gradient - Fast) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-orange-50/20 via-white to-white md:hidden"></div>
+
+        {/* LAG FIX: DESKTOP (Heavy Blobs - Hidden on Mobile) */}
+        <div className="hidden md:block absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+        <div className="hidden md:block absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="container mx-auto px-6 text-center relative z-10">
           <motion.div
@@ -242,27 +249,27 @@ const Contact = () => {
               <h4 className="font-bold text-xl mb-2 relative z-10">Join our community</h4>
               <p className="text-gray-400 text-sm mb-6 relative z-10">Follow us for updates and tech tips.</p>
               <div className="flex gap-4 relative z-10">
-  {[
-    { 
-      icon: <Instagram size={20} />, 
-      link: "https://www.instagram.com/lazyworkz__" 
-    },
-    { 
-      icon: <MessageCircle size={20} />, 
-      link: "https://whatsapp.com/channel/0029Vb7H9DQFi8xj4l65K80W" // Replace with your country code + number
-    }
-  ].map((item, i) => (
-    <a 
-      key={i} 
-      href={item.link} // Link is applied here
-      target="_blank" // Opens in a new tab
-      rel="noopener noreferrer" // Security best practice
-      className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-all"
-    >
-      {item.icon}
-    </a>
-  ))}
-</div>
+                {[
+                  { 
+                    icon: <Instagram size={20} />, 
+                    link: "https://www.instagram.com/lazyworkz__" 
+                  },
+                  { 
+                    icon: <MessageCircle size={20} />, 
+                    link: "https://whatsapp.com/channel/0029Vb7H9DQFi8xj4l65K80W" 
+                  }
+                ].map((item, i) => (
+                  <a 
+                    key={i} 
+                    href={item.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-all"
+                  >
+                    {item.icon}
+                  </a>
+                ))}
+              </div>
             </div>
           </motion.div>
 

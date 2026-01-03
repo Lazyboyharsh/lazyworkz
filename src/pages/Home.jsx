@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Animation Library
+import { motion } from 'framer-motion'; 
 import { 
   Monitor, PenTool, BarChart3, ArrowRight, Check, Code2, Globe, Zap, 
-  ShieldCheck, Cpu, MessageSquare, Clock, Star, Rocket, Layers, Users
+  Cpu, Rocket, Layers, Clock, Star
 } from 'lucide-react';
 
 const PRIMARY_COLOR_CLASSES = "from-orange-500 to-orange-600";
 
-// --- 🌟 ANIMATION VARIANTS 🌟 ---
+// --- ANIMATION VARIANTS (Only for below-the-fold content) ---
 const fadeIn = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
@@ -21,48 +21,38 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
+    transition: { staggerChildren: 0.2 }
   }
 };
 
-// --- 🌟 COMPONENTS 🌟 ---
-
+// --- OPTIMIZED BACKGROUND (Fast on Mobile) ---
 const AnimatedBackground = () => (
   <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-white">
-    {/* Floating Orbs using Framer Motion */}
-    <motion.div 
-      animate={{ 
-        scale: [1, 1.2, 1],
-        x: [0, 50, 0],
-        y: [0, 30, 0], 
-      }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-orange-100/50 rounded-full blur-[100px]"
-    />
-    <motion.div 
-      animate={{ 
-        scale: [1, 1.1, 1],
-        x: [0, -30, 0],
-        y: [0, 50, 0], 
-      }}
-      transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] bg-purple-100/40 rounded-full blur-[100px]"
-    />
-     <motion.div 
-      animate={{ 
-        scale: [1, 1.3, 1],
-        x: [0, 20, 0],
-      }}
-      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] bg-blue-50/60 rounded-full blur-[100px]"
-    />
     
-    {/* Grid Pattern */}
+    {/* 1. MOBILE: Static Gradient (Zero Lag) */}
+    <div className="absolute inset-0 bg-gradient-to-b from-orange-50/50 via-white to-white md:hidden"></div>
+
+    {/* 2. DESKTOP: Animated Blobs (Hidden on Mobile) */}
+    <div className="hidden md:block">
+      <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-orange-100/50 rounded-full blur-[80px] animate-blob"></div>
+      <div className="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] bg-purple-100/40 rounded-full blur-[80px] animate-blob animation-delay-2000"></div>
+    </div>
+
+    {/* Grid Pattern (Lightweight) */}
     <div className="absolute inset-0 opacity-[0.03]" 
          style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
     </div>
+
+    <style>{`
+      @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+      }
+      .animate-blob { animation: blob 7s infinite; }
+      .animation-delay-2000 { animation-delay: 2s; }
+    `}</style>
   </div>
 );
 
@@ -72,17 +62,16 @@ const TechMarquee = () => {
     { name: "Python", icon: <Cpu size={18} /> },
     { name: "Tailwind", icon: <Zap size={18} /> },
     { name: "Node.js", icon: <Globe size={18} /> },
-    { name: "Security", icon: <ShieldCheck size={18} /> },
     { name: "Analytics", icon: <BarChart3 size={18} /> },
   ];
 
   return (
     <div className="w-full bg-white border-y border-gray-100 py-6 overflow-hidden relative z-20">
-      <div className="flex gap-16 items-center animate-scroll whitespace-nowrap w-max">
+      {/* 'will-change-transform' helps mobile GPU handle scrolling smoothly */}
+      <div className="flex gap-16 items-center animate-scroll whitespace-nowrap w-max will-change-transform">
         {[...techs, ...techs, ...techs, ...techs].map((tech, i) => (
-          <div key={i} className="flex  items-center gap-3 text-gray-400 font-bold uppercase tracking-wider text-sm">
-            {tech.icon}
-            {tech.name}
+          <div key={i} className="flex items-center gap-3 text-gray-400 font-bold uppercase tracking-wider text-sm">
+            {tech.icon} {tech.name}
           </div>
         ))}
       </div>
@@ -94,44 +83,20 @@ const TechMarquee = () => {
   );
 };
 
-const StatItem = ({ number, label }) => (
-  <motion.div 
-    variants={fadeIn}
-    className="text-center p-6 border-r last:border-r-0 border-gray-800/30"
-  >
-    <div className={`text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r ${PRIMARY_COLOR_CLASSES} mb-2`}>
-      {number}
-    </div>
-    <p className="text-gray-400 font-medium text-xs md:text-sm tracking-widest uppercase">{label}</p>
-  </motion.div>
-);
-
 /* --- MAIN PAGE --- */
 const Home = () => {
   const [formStatus, setFormStatus] = useState('idle');
   const [formData, setFormData] = useState({ name: '', email: '', website: '' });
 
-    // --- 🔍 SEO (React 19 Safe, MUST be inside component) ---
+  // --- SEO METADATA ---
   useEffect(() => {
     document.title = "LazyWorkz – High Performance Websites & Digital Growth";
-
-    const metaDescription = document.createElement("meta");
-    metaDescription.name = "description";
-    metaDescription.content =
-      "LazyWorkz builds high-performance websites, SEO, and branding solutions that turn clicks into revenue.";
-    document.head.appendChild(metaDescription);
-
-    const canonical = document.createElement("link");
-    canonical.rel = "canonical";
-    canonical.href = "https://lazyworkz.com/";
-    document.head.appendChild(canonical);
-
-    return () => {
-      document.head.removeChild(metaDescription);
-      document.head.removeChild(canonical);
-    };
+    const metaDesc = document.createElement("meta");
+    metaDesc.name = "description";
+    metaDesc.content = "LazyWorkz builds high-performance websites, SEO, and branding solutions that turn clicks into revenue.";
+    document.head.appendChild(metaDesc);
+    return () => document.head.removeChild(metaDesc);
   }, []);
-
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.id]: e.target.value });
 
@@ -143,7 +108,7 @@ const Home = () => {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          access_key:"3ba0f05a-b567-4edd-8985-ffdabe341542",
+          access_key: "3ba0f05a-b567-4edd-8985-ffdabe341542",
           subject: "New Free Audit Request",
           from_name: "LazyWorkz Audit Form",
           ...formData
@@ -151,56 +116,49 @@ const Home = () => {
       });
       setFormStatus('success');
       setFormData({ name: '', email: '', website: '' });
-    } catch (error) {
-      setFormStatus('error');
-    }
+    } catch (error) { setFormStatus('error'); }
     setTimeout(() => { if(formStatus !== 'success') setFormStatus('idle') }, 3000);
   };
 
   return (
     <div className="pt-16 w-full overflow-x-hidden min-h-screen font-sans text-gray-900 bg-white">
 
-      {/* 1. HERO SECTION (Centered & Animated) */}
+      {/* 1. HERO SECTION - LCP OPTIMIZED (Static Text) */}
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
         <AnimatedBackground />
 
         <div className="container mx-auto px-6 relative z-10 pt-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             
-            {/* Left Content */}
-            <motion.div 
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-              className="text-center lg:text-left"
-            >
-              <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 text-orange-600 text-sm font-bold mb-8 shadow-sm">
+            {/* Left Content - Static HTML for instant Paint */}
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 text-orange-600 text-sm font-bold mb-8 shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
                 </span>
                 Accepting New Projects
-              </motion.div>
+              </div>
 
-              <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-[1.1] tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-[1.1] tracking-tight">
                 Turn Clicks Into <br />
                 <span className={`text-transparent bg-clip-text bg-gradient-to-r ${PRIMARY_COLOR_CLASSES}`}>
                   Revenue.
                 </span>
-              </motion.h1>
+              </h1>
 
-              <motion.p variants={fadeIn} className="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium">
+              <p className="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium">
                 Stop losing leads to a slow website. We build high-performance digital experiences that scale your business automatically.
-              </motion.p>
+              </p>
 
-              <motion.div variants={fadeIn} className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                  <Link to="/services" className="px-8 py-4 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                    View Pricing
+                   View Pricing
                  </Link>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
-            {/* Right Form */}
+            {/* Right Form - Animation is okay here */}
             <motion.div 
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -209,7 +167,12 @@ const Home = () => {
             >
               <div className="relative group">
                 <div className={`absolute -inset-1 bg-gradient-to-r ${PRIMARY_COLOR_CLASSES} rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000`}></div>
-                <div className="relative bg-white/80 backdrop-blur-xl border border-white/80 p-8 rounded-2xl shadow-2xl">
+                
+                {/* LAG FIX: Removed backdrop-blur-xl on mobile. 
+                   Mobile: Solid white background (Fast).
+                   Desktop: Glass effect (Beautiful).
+                */}
+                <div className="relative bg-white md:bg-white/80 md:backdrop-blur-xl border border-gray-100 md:border-white/80 p-8 rounded-2xl shadow-2xl">
                    {formStatus === 'success' ? (
                     <div className="text-center py-10">
                       <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce"><Check size={32} /></div>
@@ -239,7 +202,7 @@ const Home = () => {
 
       <TechMarquee />
 
-      {/* 2. SERVICES SECTION */}
+      {/* 2. SERVICES SECTION - Animation Enabled */}
       <section className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
           <motion.div 
@@ -270,7 +233,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. NEW: WHY CHOOSE US */}
+      {/* 3. WHY CHOOSE US */}
       <section className="py-24 bg-white overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -313,7 +276,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 4. NEW: PROCESS SECTION */}
+      {/* 4. PROCESS SECTION */}
       <section className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-center mb-16">
@@ -322,9 +285,7 @@ const Home = () => {
           </motion.div>
 
           <div className="relative grid md:grid-cols-4 gap-8">
-             {/* Connector Line (Desktop) */}
              <div className="hidden md:block absolute top-8 left-0 w-full h-0.5 bg-gray-200 z-0"></div>
-
              {[
                { step: "01", title: "Discovery", desc: "We learn about your goals." },
                { step: "02", title: "Strategy", desc: "We plan the perfect solution." },
@@ -350,99 +311,70 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 5. NEW: TESTIMONIALS */}
-<section className="py-24 bg-white">
-  <div className="container mx-auto px-6">
-    <motion.h2 
-      initial="hidden" 
-      whileInView="visible" 
-      viewport={{ once: true }} 
-      variants={fadeIn} 
-      className="text-3xl font-extrabold text-center mb-16"
-    >
-      What People Say
-    </motion.h2>
-
-    <div className="grid md:grid-cols-3 gap-8">
-      {[
-        {
-          name: "Vikram Mehta",
-          // role: "Founder, UrbanKicks",
-          review: "LazyWorkz ne game change kar diya! The website is butter smooth and the design is exactly what I wanted. Best part is their support team—hamesha available rehte hain."
-        },
-        {
-          name: "Anjali Gupta",
-          // role: "Marketing Head, TechFlow",
-          review: "Honestly, finding a reliable agency is hard, but these guys are genuine. Kaam time pe deliver kiya aur koi hidden charges nahi. Super satisfied with the new landing page!"
-        },
-        {
-          name: "Rohan Desai",
-          // role: "CEO, Desai Logistics",
-          review: "Professionalism at its peak. They understood our requirements perfectly. Website load speed ab kaafi fast hai. If you want quality work in a budget, go for them."
-        }
-      ].map((testimonial, i) => (
-        <motion.div 
-          key={i}
-          initial={{ opacity: 0, y: 30 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          transition={{ delay: i * 0.1 }}
-          className="bg-gray-50 p-8 rounded-2xl flex flex-col justify-between"
-        >
-          <div>
-            <div className="flex gap-1 text-orange-400 mb-4">
-              {[...Array(5)].map((_, index) => (
-                <Star key={index} fill="currentColor" size={16} />
-              ))}
-            </div>
-            <p className="text-gray-600 mb-6 italic leading-relaxed">
-              "{testimonial.review}"
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-3 mt-auto">
-            {/* Using Initials for avatar since no images are available */}
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
-              {testimonial.name.split(' ').map(n => n[0]).join('')}
-            </div>
-            <div>
-              <div className="font-bold text-gray-900">{testimonial.name}</div>
-              <div className="text-xs text-gray-500">{testimonial.role}</div>
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
-
-      {/* 6. STATS BAR */}
-      {/* <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="bg-gray-900 text-white py-16"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-y-8"
+      {/* 5. TESTIMONIALS */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <motion.h2 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} 
+            className="text-3xl font-extrabold text-center mb-16"
           >
-            <StatItem number="15+" label="Projects Shipped" />
-            <StatItem number="100%" label="Satisfaction" />
-            <StatItem number="4h" label="Response Time" />
-            <StatItem number="24/7" label="Support" />
-          </motion.div>
-        </div>
-      </motion.div> */}
+            What People Say
+          </motion.h2>
 
-      {/* 7. FINAL CTA */}
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Vikram Mehta",
+                review: "LazyWorkz ne game change kar diya! The website is butter smooth and the design is exactly what I wanted. Best part is their support team—hamesha available rehte hain."
+              },
+              {
+                name: "Anjali Gupta",
+                review: "Honestly, finding a reliable agency is hard, but these guys are genuine. Kaam time pe deliver kiya aur koi hidden charges nahi. Super satisfied with the new landing page!"
+              },
+              {
+                name: "Rohan Desai",
+                review: "Professionalism at its peak. They understood our requirements perfectly. Website load speed ab kaafi fast hai. If you want quality work in a budget, go for them."
+              }
+            ].map((testimonial, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 30 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                viewport={{ once: true }} 
+                transition={{ delay: i * 0.1 }}
+                className="bg-gray-50 p-8 rounded-2xl flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex gap-1 text-orange-400 mb-4">
+                    {[...Array(5)].map((_, index) => (
+                      <Star key={index} fill="currentColor" size={16} />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 mb-6 italic leading-relaxed">"{testimonial.review}"</p>
+                </div>
+                
+                <div className="flex items-center gap-3 mt-auto">
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
+                    {testimonial.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-900">{testimonial.name}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. FINAL CTA */}
       <section className="py-24 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-center">
         <div className="container mx-auto px-6">
-           <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Let's Build Something Great.</h2>
-           <p className="text-xl text-orange-100 mb-10 max-w-2xl mx-auto">Don't settle for average. Get a website that performs as good as it looks.</p>
-           <Link to="/contact" className="inline-block bg-white text-orange-600 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:bg-gray-100 hover:scale-105 transition-all">
-             Start Your Project
-           </Link>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Let's Build Something Great.</h2>
+            <p className="text-xl text-orange-100 mb-10 max-w-2xl mx-auto">Don't settle for average. Get a website that performs as good as it looks.</p>
+            <Link to="/contact" className="inline-block bg-white text-orange-600 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:bg-gray-100 hover:scale-105 transition-all">
+              Start Your Project
+            </Link>
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Plus, Minus, ArrowRight, Sparkles, AlertCircle, X, Loader2 } from 'lucide-react';
 
@@ -154,7 +154,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => {
 // --- SUB-COMPONENT: CONTACT MODAL ---
 const ContactModal = ({ plan, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [result, setResult] = useState(null); // null | 'success' | 'error'
+  const [result, setResult] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -162,11 +162,7 @@ const ContactModal = ({ plan, onClose }) => {
     setResult(null);
 
     const formData = new FormData(e.target);
-    
-    // Add Web3Forms Access Key
     formData.append("access_key", "3ba0f05a-b567-4edd-8985-ffdabe341542");
-    
-    // Custom Subject
     formData.append("subject", `New Inquiry: ${plan?.name || 'General Inquiry'}`);
 
     try {
@@ -174,14 +170,10 @@ const ContactModal = ({ plan, onClose }) => {
         method: "POST",
         body: formData
       });
-
       const data = await response.json();
-
       if (data.success) {
         setResult('success');
         e.target.reset();
-        // Optional: Close modal after delay
-        // setTimeout(onClose, 3000);
       } else {
         setResult('error');
       }
@@ -197,6 +189,7 @@ const ContactModal = ({ plan, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      // LAG FIX: Using standard backdrop-blur-sm (lightweight)
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
       onClick={onClose}
     >
@@ -207,7 +200,6 @@ const ContactModal = ({ plan, onClose }) => {
         className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Header */}
         <div className="bg-gradient-to-r from-orange-50 to-white px-8 py-6 border-b border-orange-100 flex justify-between items-center">
           <div>
             <h3 className="text-xl font-bold text-gray-900">Get Started</h3>
@@ -218,7 +210,6 @@ const ContactModal = ({ plan, onClose }) => {
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-8">
           {result === 'success' ? (
             <div className="text-center py-8">
@@ -270,7 +261,6 @@ const ContactModal = ({ plan, onClose }) => {
           )}
         </div>
         
-        {/* Footer info */}
         {result !== 'success' && (
           <div className="bg-gray-50 px-8 py-4 text-center">
             <p className="text-xs text-gray-400">We respect your privacy. No spam.</p>
@@ -284,7 +274,17 @@ const ContactModal = ({ plan, onClose }) => {
 // --- MAIN COMPONENT ---
 const Services = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
-  const [selectedPlan, setSelectedPlan] = useState(null); // Controls Modal Visibility
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // --- SEO OPTIMIZATION ---
+  useEffect(() => {
+    document.title = "Services & Pricing | LazyWorkz";
+    const metaDesc = document.createElement("meta");
+    metaDesc.name = "description";
+    metaDesc.content = "Transparent pricing for websites, ecommerce, and branding. Packages start at ₹2,999.";
+    document.head.appendChild(metaDesc);
+    return () => document.head.removeChild(metaDesc);
+  }, []);
 
   return (
     <div className="pt-16 w-full overflow-x-hidden font-sans bg-white selection:bg-orange-100 selection:text-orange-700">
@@ -299,16 +299,19 @@ const Services = () => {
         )}
       </AnimatePresence>
 
-      {/* 1. HERO SECTION WITH GRID PATTERN */}
+      {/* 1. HERO SECTION (LAG FIXED) */}
       <header className="relative py-20 lg:py-28 overflow-hidden">
-        {/* CSS Grid Background Pattern */}
+        {/* Grid Pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" 
              style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
         </div>
         
-        {/* Soft Gradients */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+        {/* LAG FIX: MOBILE (Static Gradient - Fast) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-orange-50/30 via-white to-white md:hidden"></div>
+
+        {/* LAG FIX: DESKTOP (Heavy Blobs - Hidden on Mobile) */}
+        <div className="hidden md:block absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+        <div className="hidden md:block absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
 
         <div className="relative z-10 container mx-auto px-6 text-center">
           <motion.div
@@ -332,7 +335,6 @@ const Services = () => {
               Professional websites starting at just ₹2,999. No hidden development fees.
             </p>
 
-            {/* Disclaimer Alert */}
             <div className="inline-flex items-start md:items-center gap-3 bg-blue-50 border border-blue-100 p-4 rounded-lg max-w-xl mx-auto text-left md:text-center">
               <AlertCircle size={20} className="text-blue-600 shrink-0 mt-0.5 md:mt-0" />
               <p className="text-sm text-blue-800">
@@ -346,7 +348,6 @@ const Services = () => {
 
       {/* 2. PRICING CARDS */}
       <section className="container mx-auto px-4 pb-24">
-        {/* UPDATED GRID: Fits 6 items perfectly on large screens (3 columns) */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start max-w-7xl mx-auto">
           
           {plans.map((plan, index) => (
@@ -356,8 +357,9 @@ const Services = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: plan.delay }}
+              // LAG FIX: 'will-change-transform' optimizes scrolling performance
               className={`
-                relative flex flex-col p-6 rounded-2xl transition-all duration-300 h-full
+                relative flex flex-col p-6 rounded-2xl transition-all duration-300 h-full will-change-transform
                 ${plan.isPopular 
                   ? 'bg-gray-900 text-white shadow-2xl shadow-gray-900/20 md:scale-105 z-10 ring-1 ring-white/10' 
                   : 'bg-white text-gray-900 border border-gray-100 shadow-lg hover:shadow-xl hover:-translate-y-1 z-0'}
@@ -379,7 +381,7 @@ const Services = () => {
               <div className="flex items-baseline mb-6">
                 <span className="text-3xl font-extrabold tracking-tight">{plan.price}</span>
                 {plan.period && (
-                   <span className={`ml-1 text-xs font-medium ${plan.isPopular ? 'text-gray-500' : 'text-gray-400'}`}>{plan.period}</span>
+                    <span className={`ml-1 text-xs font-medium ${plan.isPopular ? 'text-gray-500' : 'text-gray-400'}`}>{plan.period}</span>
                 )}
               </div>
 
