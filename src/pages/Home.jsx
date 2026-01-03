@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion'; // Animation Library
 import { 
@@ -110,6 +110,28 @@ const StatItem = ({ number, label }) => (
 const Home = () => {
   const [formStatus, setFormStatus] = useState('idle');
   const [formData, setFormData] = useState({ name: '', email: '', website: '' });
+
+    // --- 🔍 SEO (React 19 Safe, MUST be inside component) ---
+  useEffect(() => {
+    document.title = "LazyWorkz – High Performance Websites & Digital Growth";
+
+    const metaDescription = document.createElement("meta");
+    metaDescription.name = "description";
+    metaDescription.content =
+      "LazyWorkz builds high-performance websites, SEO, and branding solutions that turn clicks into revenue.";
+    document.head.appendChild(metaDescription);
+
+    const canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    canonical.href = "https://lazyworkz.com/";
+    document.head.appendChild(canonical);
+
+    return () => {
+      document.head.removeChild(metaDescription);
+      document.head.removeChild(canonical);
+    };
+  }, []);
+
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.id]: e.target.value });
 
