@@ -25,7 +25,7 @@ const Portfolio = () => {
     },
     { 
       id: 2, 
-      title: "TechStart Logo", 
+      title: "Namo Production Logo", 
       category: "Brand Identity", 
       type: "Branding", 
       img: logoImg, 
