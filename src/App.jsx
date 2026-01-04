@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react'; // 1. Import useEffect
+import { Routes, Route, useLocation } from 'react-router-dom'; // 2. Import useLocation
 
 // Components
 import Navbar from './components/Navbar';
@@ -10,16 +11,22 @@ import Services from './pages/Services';
 import Portfolio from './pages/Portfolio';
 import TemplateStore from './pages/TemplateStore';
 import Contact from './pages/Contact';
-import Legal from './pages/Legal'; // <--- Ensure you created this file from the previous step
+import Legal from './pages/Legal';
 
 function App() {
+  // 3. Get the current URL path
+  const { pathname } = useLocation();
+
+  // 4. Automatically scroll to top whenever the path changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <div className="font-sans text-gray-700 flex flex-col min-h-screen">
       
-      {/* Navbar: Stays fixed at the top */}
       <Navbar />      
       
-      {/* Main Content: flex-grow pushes Footer to bottom */}
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -28,17 +35,17 @@ function App() {
           {/* Projects Page */}
           <Route path="/projects" element={<Portfolio />} />
           
-          {/* Store Page (Must be '/store' to match Navbar) */}
+          {/* Store Page */}
           <Route path="/store" element={<TemplateStore />} /> 
           
           <Route path="/contact" element={<Contact />} />
 
-          {/* Legal Routes (For Footer Links) */}
+          {/* Legal Routes */}
           <Route path="/privacy" element={<Legal title="Privacy Policy" lastUpdated="Jan 01, 2026" />} />
           <Route path="/terms" element={<Legal title="Terms of Service" lastUpdated="Jan 01, 2026" />} />
           <Route path="/sitemap" element={<Legal title="Sitemap" lastUpdated="Jan 01, 2026" />} />
           
-          {/* 404 Page (Catch-all) */}
+          {/* 404 Page */}
           <Route path="*" element={
             <div className="h-[80vh] flex flex-col items-center justify-center bg-gray-50 text-center px-4">
               <h1 className="text-9xl font-extrabold text-gray-200">404</h1>
@@ -49,7 +56,6 @@ function App() {
         </Routes>
       </main>
 
-      {/* Footer: Stays at the bottom */}
       <Footer /> 
     </div>
   );
