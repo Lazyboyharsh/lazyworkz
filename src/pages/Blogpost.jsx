@@ -6,7 +6,7 @@ import { ArrowLeft, Calendar, User, Share2, CheckCircle, XCircle } from 'lucide-
 const blogContent = {
   'react-vs-wordpress': {
     title: "React vs. WordPress: Why We Choose Speed Over Bloat",
-    date: "Jan 10, 2026",
+    date: "Jan 04, 2026",
     author: "Harsh Jain",
     image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=1200",
     content: (
@@ -66,7 +66,7 @@ const blogContent = {
 
   'hard-work-vs-smart-work': {
     title: "Why Hard Work Won't Grow Your Business (But a Fast Website Will)",
-    date: "Jan 05, 2026",
+    date: "Jan 04, 2026",
     author: "Team LazyWorkz",
     image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1200",
     content: (
@@ -119,7 +119,7 @@ const blogContent = {
 
   'hidden-costs-wix': {
     title: "The Hidden Costs of 'Free' Website Builders",
-    date: "Jan 02, 2026",
+    date: "Jan 04, 2026",
     author: "Team LazyWorkz",
     image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=1200",
     content: (
