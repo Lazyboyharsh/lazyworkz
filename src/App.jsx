@@ -1,5 +1,5 @@
-import { useEffect } from 'react'; // 1. Import useEffect
-import { Routes, Route, useLocation } from 'react-router-dom'; // 2. Import useLocation
+import { useEffect } from 'react'; 
+import { Routes, Route, useLocation } from 'react-router-dom'; 
 
 // Components
 import Navbar from './components/Navbar';
@@ -12,12 +12,12 @@ import Portfolio from './pages/Portfolio';
 import TemplateStore from './pages/TemplateStore';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
+import Blog from './pages/Blog';        // <--- NEW
+import BlogPost from './pages/BlogPost'; // <--- NEW
 
 function App() {
-  // 3. Get the current URL path
   const { pathname } = useLocation();
 
-  // 4. Automatically scroll to top whenever the path changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -38,6 +38,10 @@ function App() {
           {/* Store Page */}
           <Route path="/store" element={<TemplateStore />} /> 
           
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />           {/* <--- NEW */}
+          <Route path="/blog/:id" element={<BlogPost />} />   {/* <--- NEW */}
+
           <Route path="/contact" element={<Contact />} />
 
           {/* Legal Routes */}
