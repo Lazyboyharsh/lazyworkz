@@ -13,7 +13,7 @@ import TemplateStore from './pages/TemplateStore';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import Blog from './pages/Blog';        // <--- NEW
-import BlogPost from './pages/BlogPost'; // <--- NEW
+import BlogPost from './pages/Blogpost'; // <--- NEW
 
 function App() {
   const { pathname } = useLocation();
