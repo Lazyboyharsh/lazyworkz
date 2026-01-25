@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion'; 
@@ -5,8 +6,41 @@ import {
   Monitor, PenTool, BarChart3, ArrowRight, Check, Code2, Globe, Zap, 
   Cpu, Rocket, Layers, Clock, Star
 } from 'lucide-react';
-
 const PRIMARY_COLOR_CLASSES = "from-orange-500 to-orange-600";
+
+<>
+  <Helmet>
+    {/* Primary SEO */}
+    <title>Affordable Web Development Company in India | LazyWorkz</title>
+    <meta
+      name="description"
+      content="LazyWorkz is an affordable web development company in India building high-performance React websites for startups and businesses."
+    />
+    <link rel="canonical" href="https://www.lazyworkz.com/" />
+
+    {/* Open Graph (Social Sharing) */}
+    <meta property="og:title" content="Affordable Web Development Company in India | LazyWorkz" />
+    <meta
+      property="og:description"
+      content="High-performance React websites, branding and SEO solutions for startups and growing businesses."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.lazyworkz.com/" />
+    <meta property="og:image" content="https://www.lazyworkz.com/og-home.jpg" />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Affordable Web Development Company in India | LazyWorkz" />
+    <meta
+      name="twitter:description"
+      content="We build fast, scalable and SEO-optimized websites that convert visitors into customers."
+    />
+    <meta name="twitter:image" content="https://www.lazyworkz.com/og-home.jpg" />
+  </Helmet>
+
+  {/* rest of your page */}
+</>
+
 
 // --- ANIMATION VARIANTS (Only for below-the-fold content) ---
 const fadeIn = {
@@ -24,6 +58,7 @@ const staggerContainer = {
     transition: { staggerChildren: 0.2 }
   }
 };
+
 
 // --- OPTIMIZED BACKGROUND (Fast on Mobile) ---
 const AnimatedBackground = () => (
